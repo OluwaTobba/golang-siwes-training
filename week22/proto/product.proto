@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/yourname/siwes/week22/proto;pb";
+
+package product;
+
+// Messages
+message Product {
+  int32  id    = 1;
+  string name  = 2;
+  double price = 3;
+  int32  stock = 4;
+}
+
+message GetProductRequest  { int32 id = 1; }
+message ListProductsRequest{ string category = 1; }
+message UpdateStockRequest { int32 id = 1; int32 delta = 2; }
+message Empty              {}
+
+// Service definition
+service ProductService {
+  rpc GetProduct    (GetProductRequest)   returns (Product);
+  rpc ListProducts  (ListProductsRequest) returns (stream Product);
+  rpc UpdateStock   (UpdateStockRequest)  returns (Product);
+}
+
+// Generate with:
+// protoc --go_out=. --go-grpc_out=. proto/product.proto

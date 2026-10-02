@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-api-svc
+spec:
+  selector:
+    app: go-api
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-api-config
+data:
+  PORT:      "8080"
+  LOG_LEVEL: "info"
+  DB_HOST:   "postgres-svc"
+  DB_PORT:   "5432"
+  DB_NAME:   "siwes_db"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: go-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: go-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type:               Utilization
+          averageUtilization: 70
