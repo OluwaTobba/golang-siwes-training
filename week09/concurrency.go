@@ -77,7 +77,7 @@ func main() {
 
 	// Fan-out worker pool
 	fmt.Println("\n=== Fan-out (3 workers, 6 jobs) ===")
-	jobs    := make(chan int, 6)
+	jobs := make(chan int, 6)
 	results := make(chan int, 6)
 	for w := 1; w <= 3; w++ {
 		go worker(w, jobs, results)
