@@ -15,11 +15,11 @@ kind: ConfigMap
 metadata:
   name: go-api-config
 data:
-  PORT:      "8080"
+  PORT: "8080"
   LOG_LEVEL: "info"
-  DB_HOST:   "postgres-svc"
-  DB_PORT:   "5432"
-  DB_NAME:   "siwes_db"
+  DB_HOST: "postgres-svc"
+  DB_PORT: "5432"
+  DB_NAME: "siwes_db"
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -37,5 +37,5 @@ spec:
       resource:
         name: cpu
         target:
-          type:               Utilization
+          type: Utilization
           averageUtilization: 70

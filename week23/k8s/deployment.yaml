@@ -19,7 +19,8 @@ spec:
         runAsUser: 1001
       containers:
         - name: go-api
-          image: yourname/go-api:v1.0.0
+          image: go-api:v1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:
@@ -33,20 +34,20 @@ spec:
                   key: db-password
           resources:
             requests:
-              cpu:    "100m"
+              cpu: "100m"
               memory: "64Mi"
             limits:
-              cpu:    "500m"
+              cpu: "500m"
               memory: "128Mi"
           livenessProbe:
             httpGet:
               path: /healthz
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds:       10
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /readyz
               port: 8080
             initialDelaySeconds: 3
-            periodSeconds:       5
+            periodSeconds: 5
