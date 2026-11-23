@@ -11,20 +11,20 @@ import (
 const dsn = "postgres://postgres:password@localhost:5432/siwes_db?sslmode=disable"
 
 type User struct {
-	ID       int
+	ID int
 	Username string
-	Email    string
-	Active   bool
+	Email string
+	Active bool
 }
 
 func createTable(db *sql.DB) error {
 	_, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
-			id       SERIAL PRIMARY KEY,
+			id SERIAL PRIMARY KEY,
 			username VARCHAR(100) NOT NULL UNIQUE,
-			email    VARCHAR(200) NOT NULL,
-			active   BOOLEAN DEFAULT TRUE,
-			created  TIMESTAMP DEFAULT NOW()
+			email VARCHAR(200) NOT NULL,
+			active BOOLEAN DEFAULT TRUE,
+			created TIMESTAMP DEFAULT NOW()
 		)`)
 	return err
 }
@@ -91,15 +91,15 @@ func main() {
 
 	createTable(db)
 
-	id, _ := insertUser(db, User{Username: "david_o", Email: "david@example.com"})
+	id, _ := insertUser(db, User{Username: "michael_o", Email: "michealoluwatoba14@gmail.com"})
 	fmt.Println("Inserted user id:", id)
 
 	u, _ := getUser(db, id)
 	fmt.Printf("Fetched: %+v\n", u)
 
 	batch := []User{
-		{Username: "alice", Email: "alice@example.com"},
-		{Username: "bob",   Email: "bob@example.com"},
+		{Username: "tobba", Email: "tobba@example.com"},
+		{Username: "mipo", Email: "mipo@example.com"},
 	}
 	transferBatch(db, batch)
 
