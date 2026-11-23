@@ -43,10 +43,6 @@ siwes-golang-training/
 ├── week22/          # gRPC & Protocol Buffers
 ├── week23/          # Kubernetes deployment
 ├── week24/          # Capstone — Inventory Management Microservice
-├── docs/
-│   ├── SIWES_Golang_24Week_Logbook.docx   # Weekly logbook (Record of Activities)
-│   ├── SIWES_Golang_Report.docx           # Full SIWES report
-│   └── SIWES_Golang_24Week_Code.docx      # Code reference document
 └── README.md
 ```
 
