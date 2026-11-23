@@ -7,7 +7,7 @@ import (
 
 // Custom error types
 type ValidationError struct {
-	Field   string
+	Field string
 	Message string
 }
 func (e *ValidationError) Error() string {
@@ -16,7 +16,7 @@ func (e *ValidationError) Error() string {
 
 type NotFoundError struct {
 	Resource string
-	ID       int
+	ID int
 }
 func (e *NotFoundError) Error() string {
 	return fmt.Sprintf("%s with id=%d not found", e.Resource, e.ID)
