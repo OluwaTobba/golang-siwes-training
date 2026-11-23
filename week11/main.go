@@ -26,7 +26,7 @@ func main() {
 	sort.Ints(nums)
 	fmt.Println("sorted:", nums)
 
-	names := []string{"Zara", "Alice", "Mike", "Bob"}
+	names := []string{"Tobba", "Mipo", "Mike", "Ify"}
 	sort.Strings(names)
 	fmt.Println("sorted:", names)
 
