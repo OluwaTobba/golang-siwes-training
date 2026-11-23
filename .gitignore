@@ -1,0 +1,12 @@
+# Compiled binaries
+*.exe
+*.test
+*.out
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+
+# Local environment files (may hold secrets)
+.env
