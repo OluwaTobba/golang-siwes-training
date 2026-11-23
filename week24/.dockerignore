@@ -1,0 +1,8 @@
+.git
+.gitignore
+*.exe
+*_test.go
+.idea/
+.vscode/
+*.md
+k8s/

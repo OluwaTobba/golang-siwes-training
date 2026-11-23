@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -18,53 +19,92 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/yourname/siwes/week24/internal/domain"
-	"github.com/yourname/siwes/week24/internal/repository"
-	"github.com/yourname/siwes/week24/internal/service"
-	httphandler "github.com/yourname/siwes/week24/internal/transport/http"
-	grpchandler "github.com/yourname/siwes/week24/internal/transport/grpc"
-	pb "github.com/yourname/siwes/week24/proto"
+	"github.com/OluwaTobba/golang-siwes-training/week24/internal/domain"
+	"github.com/OluwaTobba/golang-siwes-training/week24/internal/repository"
+	"github.com/OluwaTobba/golang-siwes-training/week24/internal/service"
+	grpchandler "github.com/OluwaTobba/golang-siwes-training/week24/internal/transport/grpc"
+	httphandler "github.com/OluwaTobba/golang-siwes-training/week24/internal/transport/http"
+	pb "github.com/OluwaTobba/golang-siwes-training/week24/proto"
 )
 
-func main() {
-	// ── Database ───────────────────────────────────────────────
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil { log.Fatal("db:", err) }
-	db.AutoMigrate(&domain.Product{})
+func env(key, def string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return def
+}
 
-	// ── Dependency injection ───────────────────────────────────
-	repo    := repository.NewGORMProductRepo(db)
-	svc     := service.NewInventoryService(repo)
+func main() {
+	// Database (retry, because the DB container may start after the API)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		env("DB_HOST", "localhost"), env("DB_PORT", "5432"),
+		env("DB_USER", "postgres"), env("DB_PASSWORD", "secret"), env("DB_NAME", "siwes_db"))
+
+	var db *gorm.DB
+	var err error
+	for i := 1; i <= 15; i++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		log.Printf("database not ready (%d/15): %v", i, err)
+		time.Sleep(2 * time.Second)
+	}
+	if err != nil {
+		log.Fatal("db: ", err)
+	}
+	if err := db.AutoMigrate(&domain.Product{}); err != nil {
+		log.Fatal("migrate: ", err)
+	}
+	sqlDB, _ := db.DB()
+
+	// Dependency injection
+	repo := repository.NewGORMProductRepo(db)
+	svc := service.NewInventoryService(repo)
 	handler := httphandler.NewHandler(svc)
 
-	// ── REST API ───────────────────────────────────────────────
+	// REST API
 	r := chi.NewRouter()
 	r.Use(middleware.Logger, middleware.Recoverer, middleware.RequestID)
-	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200) })
-	r.Get("/readyz",  func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200) })
+	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK) })
+	r.Get("/readyz", func(w http.ResponseWriter, req *http.Request) {
+		if err := sqlDB.PingContext(req.Context()); err != nil {
+			http.Error(w, "database not ready", http.StatusServiceUnavailable)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	})
 	r.Handle("/metrics", promhttp.Handler())
 	r.Route("/api/v1/products", func(r chi.Router) {
-		r.Get("/",        handler.List)
-		r.Post("/",       handler.Create)
-		r.Get("/{id}",    handler.Get)
+		r.Get("/", handler.List)
+		r.Post("/", handler.Create)
+		r.Get("/{id}", handler.Get)
 		r.Patch("/{id}/stock", handler.AdjustStock)
 		r.Delete("/{id}", handler.Delete)
 	})
 	httpSrv := &http.Server{Addr: ":8080", Handler: r}
 
-	// ── gRPC Server ───────────────────────────────────────────
-	lis, _ := net.Listen("tcp", ":50051")
+	// gRPC server
+	lis, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatal("grpc listen: ", err)
+	}
 	grpcSrv := grpc.NewServer()
 	pb.RegisterInventoryServiceServer(grpcSrv, grpchandler.NewGRPCHandler(svc))
 
-	// ── Graceful shutdown ─────────────────────────────────────
-	go func() { log.Fatal(httpSrv.ListenAndServe()) }()
-	go func() { log.Fatal(grpcSrv.Serve(lis)) }()
-	log.Println("REST :8080  |  gRPC :50051  —  ready")
+	go func() {
+		if err := httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal(err)
+		}
+	}()
+	go func() {
+		if err := grpcSrv.Serve(lis); err != nil {
+			log.Fatal(err)
+		}
+	}()
+	log.Println("REST :8080 | gRPC :50051 - ready")
 
+	// Graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
