@@ -74,7 +74,7 @@ func runWithContext() {
 // sync.Once
 var (
 	instance string
-	once     sync.Once
+	once sync.Once
 )
 func getInstance() string {
 	once.Do(func() {
