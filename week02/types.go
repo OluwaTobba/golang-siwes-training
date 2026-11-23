@@ -24,8 +24,8 @@ func (d Direction) String() string {
 
 func main() {
 	// var declaration — explicit type
-	var age int = 25
-	var name string = "David"
+	var age int = 22
+	var name string = "Michael"
 	var isActive bool = true
 	var salary float64 = 150_000.50
 
