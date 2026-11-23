@@ -10,9 +10,9 @@ import (
 )
 
 type Student struct {
-	Name   string  `json:"name"`
-	Score  float64 `json:"score"`
-	Grade  string  `json:"grade"`
+	Name string  `json:"name"`
+	Score float64 `json:"score"`
+	Grade string  `json:"grade"`
 }
 
 func grade(score float64) string {
@@ -20,7 +20,7 @@ func grade(score float64) string {
 	case score >= 70: return "A"
 	case score >= 60: return "B"
 	case score >= 50: return "C"
-	default:          return "F"
+	default: return "F"
 	}
 }
 
@@ -43,9 +43,9 @@ func main() {
 
 	// JSON file: write then read
 	students := []Student{
-		{"Ada Lovelace", 85.5, ""},
-		{"Alan Turing", 92.0, ""},
-		{"Grace Hopper", 78.3, ""},
+		{"Michael Ogundipe", 85.5, ""},
+		{"Tobba Visuals", 92.0, ""},
+		{"Isa Bella", 68.3, ""},
 	}
 	for i := range students { students[i].Grade = grade(students[i].Score) }
 
