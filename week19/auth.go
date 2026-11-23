@@ -13,8 +13,8 @@ import (
 var jwtSecret = []byte("super-secret-key-change-in-prod")
 
 type Claims struct {
-	UserID int    `json:"user_id"`
-	Role   string `json:"role"`
+	UserID int `json:"user_id"`
+	Role string `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -24,10 +24,10 @@ const claimsKey ctxKey = "claims"
 func GenerateToken(userID int, role string) (string, error) {
 	claims := Claims{
 		UserID: userID,
-		Role:   role,
+		Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			IssuedAt: jwt.NewNumericDate(time.Now()),
 		},
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
