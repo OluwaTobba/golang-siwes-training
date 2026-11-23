@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	// ── Arrays (fixed size, value type) ──────────────────────
+	// Arrays (fixed size, value type)
 	var arr [5]int
 	arr[0] = 10
 	arr[4] = 50
@@ -15,7 +15,7 @@ func main() {
 	primes := [5]int{2, 3, 5, 7, 11}
 	fmt.Println("Primes:", primes)
 
-	// ── Slices (dynamic, reference type) ─────────────────────
+	// Slices (dynamic, reference type)
 	s := []string{"go", "python", "rust"}
 	s = append(s, "zig")
 	fmt.Println("Slice:", s, "len:", len(s), "cap:", cap(s))
@@ -41,7 +41,7 @@ func main() {
 		fmt.Println(row)
 	}
 
-	// ── Maps (key-value, reference type) ─────────────────────
+	// Maps (key-value, reference type)
 	wordCount := make(map[string]int)
 	sentence := []string{"go", "is", "fast", "go", "is", "fun", "go"}
 	for _, w := range sentence {
