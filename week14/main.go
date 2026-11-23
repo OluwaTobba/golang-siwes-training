@@ -11,18 +11,18 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-// ── Domain ────────────────────────────────────────────────────
+// Domain
 type Product struct {
-	ID    int     `json:"id"`
-	Name  string  `json:"name"`
+	ID int `json:"id"`
+	Name string `json:"name"`
 	Price float64 `json:"price"`
-	Stock int     `json:"stock"`
+	Stock int `json:"stock"`
 }
 
-// ── Repository (in-memory) ────────────────────────────────────
+// Repository (in-memory)
 type ProductRepo struct {
-	mu      sync.RWMutex
-	items   map[int]Product
+	mu sync.RWMutex
+	items map[int]Product
 	counter int
 }
 func NewRepo() *ProductRepo { return &ProductRepo{items: make(map[int]Product)} }
@@ -47,7 +47,7 @@ func (r *ProductRepo) Delete(id int) error {
 	delete(r.items, id); return nil
 }
 
-// ── Handler ───────────────────────────────────────────────────
+// Handler
 type Handler struct { repo *ProductRepo }
 
 func respond(w http.ResponseWriter, status int, data any) {
@@ -90,9 +90,9 @@ func main() {
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/products", func(r chi.Router) {
-			r.Get("/",        h.List)
-			r.Post("/",       h.Create)
-			r.Get("/{id}",    h.Get)
+			r.Get("/", h.List)
+			r.Post("/", h.Create)
+			r.Get("/{id}", h.Get)
 			r.Delete("/{id}", h.Delete)
 		})
 	})
