@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net"
 	"time"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var pingCmd = &cobra.Command{
@@ -17,21 +19,24 @@ var pingCmd = &cobra.Command{
 		timeout, _ := cmd.Flags().GetDuration("timeout")
 		addr := net.JoinHostPort(host, port)
 
+		if viper.GetBool("verbose") {
+			fmt.Printf("[verbose] dialing %s with timeout %v\n", addr, timeout)
+		}
+
 		start := time.Now()
 		conn, err := net.DialTimeout("tcp", addr, timeout)
 		elapsed := time.Since(start)
-
 		if err != nil {
-			return fmt.Errorf("❌ %s unreachable: %w", addr, err)
+			return fmt.Errorf("[FAIL] %s unreachable: %w", addr, err)
 		}
 		conn.Close()
-		fmt.Printf("✅ %s reachable in %v\n", addr, elapsed.Round(time.Millisecond))
+		fmt.Printf("[OK] %s reachable in %v\n", addr, elapsed.Round(time.Millisecond))
 		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(pingCmd)
-	pingCmd.Flags().StringP("port",    "p", "80",           "TCP port to check")
-	pingCmd.Flags().Duration("timeout", 5*time.Second,     "connection timeout")
+	pingCmd.Flags().StringP("port", "p", "80", "TCP port to check")
+	pingCmd.Flags().Duration("timeout", 5*time.Second, "connection timeout")
 }

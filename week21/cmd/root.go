@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -10,7 +12,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "devtool",
 	Short: "DevOps utility CLI",
-	Long:  "devtool — a collection of network and HTTP inspection utilities.",
+	Long:  "devtool - a collection of network and HTTP inspection utilities.",
 }
 
 func Execute() {
@@ -30,7 +32,11 @@ func init() {
 func initConfig() {
 	viper.SetConfigName(".devtool")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME")
-	viper.AutomaticEnv() // DEVTOOL_VERBOSE=true → viper.Get("verbose")=true
+	if home, err := os.UserHomeDir(); err == nil {
+		viper.AddConfigPath(home)
+	}
+	viper.SetEnvPrefix("devtool") // DEVTOOL_VERBOSE=true -> viper.Get("verbose")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	viper.AutomaticEnv()
 	viper.ReadInConfig()
 }
