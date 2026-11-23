@@ -12,8 +12,8 @@ func TestAdd(t *testing.T) {
 	}{
 		{"positive", 2, 3, 5},
 		{"negative", -1, -2, -3},
-		{"zero",     0, 5, 5},
-		{"mixed",   -3, 7, 4},
+		{"zero", 0, 5, 5},
+		{"mixed", -3, 7, 4},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -27,14 +27,14 @@ func TestAdd(t *testing.T) {
 
 func TestDiv(t *testing.T) {
 	tests := []struct {
-		name    string
-		a, b    float64
-		want    float64
+		name string
+		a, b float64
+		want float64
 		wantErr bool
 	}{
-		{"normal",     10, 2,  5.0, false},
-		{"decimal",    7,  2,  3.5, false},
-		{"by zero",    5,  0,  0,   true},
+		{"normal", 10, 2,  5.0, false},
+		{"decimal", 7,  2,  3.5, false},
+		{"by zero", 5,  0,  0,   true},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
