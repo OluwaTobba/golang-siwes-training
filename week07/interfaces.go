@@ -14,14 +14,14 @@ type Shape interface {
 
 // Concrete types
 type Circle struct{ Radius float64 }
-func (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }
+func (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }
 func (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }
-func (c Circle) Name() string       { return "Circle" }
+func (c Circle) Name() string { return "Circle" }
 
 type Rectangle struct{ Width, Height float64 }
-func (r Rectangle) Area() float64      { return r.Width * r.Height }
+func (r Rectangle) Area() float64 { return r.Width * r.Height }
 func (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }
-func (r Rectangle) Name() string       { return "Rectangle" }
+func (r Rectangle) Name() string { return "Rectangle" }
 
 type Triangle struct{ A, B, C float64 }
 func (t Triangle) Perimeter() float64 { return t.A + t.B + t.C }
