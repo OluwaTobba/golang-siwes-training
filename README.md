@@ -1,7 +1,7 @@
-# 🐹 SIWES Golang Training — 24-Week Industrial Attachment
+# 🐹 SIWES Golang Training - 24-Week Industrial Attachment
 
 > **Student Industrial Work Experience Scheme (SIWES)**  
-> Trainee: **OGUNDIPE, Michael Opemipo** (Matric No. NOU231131988)   
+> Trainee: **OGUNDIPE, Michael Opemipo**   
 > Unit: **DevOps**  
 > Industrial Supervisor: **Mr David**  
 > Duration: **24 Weeks** (2 February 2026 – 17 July 2026)  
