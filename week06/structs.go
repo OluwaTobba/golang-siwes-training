@@ -9,8 +9,8 @@ import (
 // Base struct
 type Person struct {
 	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Age       int    `json:"age"`
+	LastName string `json:"last_name"`
+	Age int `json:"age"`
 }
 
 func (p Person) FullName() string {
@@ -19,9 +19,9 @@ func (p Person) FullName() string {
 
 // Embedding — Employee "has a" Person
 type Employee struct {
-	Person                    // promoted fields
+	Person                    				// promoted fields
 	Department string `json:"department"`
-	Salary     float64 `json:"salary"`
+	Salary float64 `json:"salary"`
 }
 
 // Pointer receiver — modifies the struct
@@ -38,20 +38,20 @@ func (e Employee) String() string {
 type Circle struct {
 	Radius float64
 }
-func (c Circle) Area() float64      { return math.Pi * c.Radius * c.Radius }
+func (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }
 func (c Circle) Perimeter() float64 { return 2 * math.Pi * c.Radius }
 
 type Rectangle struct {
 	Width, Height float64
 }
-func (r Rectangle) Area() float64      { return r.Width * r.Height }
+func (r Rectangle) Area() float64 { return r.Width * r.Height }
 func (r Rectangle) Perimeter() float64 { return 2 * (r.Width + r.Height) }
 
 func main() {
 	emp := Employee{
-		Person:     Person{FirstName: "Michael", LastName: "Ogundipe", Age: 27},
+		Person: Person{FirstName: "Michael", LastName: "Ogundipe", Age: 22},
 		Department: "DevOps",
-		Salary:     450_000,
+		Salary: 450_000,
 	}
 
 	fmt.Println(emp)
@@ -67,7 +67,7 @@ func main() {
 	fmt.Println("\nJSON:\n" + string(data))
 
 	// JSON unmarshal
-	raw := `{"first_name":"Ada","last_name":"Lovelace","age":36,"department":"Engineering","salary":600000}`
+	raw := `{"first_name":"Tobba","last_name":"Visuals","age":23,"department":"Engineering","salary":600000}`
 	var emp2 Employee
 	json.Unmarshal([]byte(raw), &emp2)
 	fmt.Println("\nUnmarshalled:", emp2)
