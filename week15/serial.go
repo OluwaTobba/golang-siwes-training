@@ -23,20 +23,20 @@ func (d *JSONDate) UnmarshalJSON(data []byte) error {
 }
 
 type Employee struct {
-	Name      string    `json:"name"       xml:"name"`
-	Role      string    `json:"role"       xml:"role"`
-	StartDate JSONDate  `json:"start_date" xml:"-"`
-	Salary    *float64  `json:"salary,omitempty" xml:"salary,attr"`
+	Name string `json:"name" xml:"name"`
+	Role string `json:"role" xml:"role"`
+	StartDate JSONDate `json:"start_date" xml:"-"`
+	Salary *float64 `json:"salary,omitempty" xml:"salary,attr"`
 }
 
 // XML feed structure
 type Feed struct {
 	XMLName xml.Name `xml:"feed"`
-	Items   []Item   `xml:"item"`
+	Items []Item `xml:"item"`
 }
 type Item struct {
-	Title   string `xml:"title"`
-	Link    string `xml:"link"`
+	Title string `xml:"title"`
+	Link string `xml:"link"`
 	PubDate string `xml:"pubDate"`
 }
 
@@ -44,10 +44,10 @@ func main() {
 	// JSON round-trip with custom date and omitempty
 	salary := 500000.0
 	emp := Employee{
-		Name:      "David Ogundipe",
-		Role:      "DevOps Engineer",
+		Name: "Michael Ogundipe",
+		Role: "Golang Programmer",
 		StartDate: JSONDate(time.Now()),
-		Salary:    &salary,
+		Salary: &salary,
 	}
 	data, _ := json.MarshalIndent(emp, "", "  ")
 	fmt.Println("=== JSON ===\n" + string(data))
@@ -58,7 +58,7 @@ func main() {
 	fmt.Println("\n=== JSON (omitempty) ===\n" + string(data2))
 
 	// Unmarshal
-	raw := `{"name":"Ada","role":"Engineer","start_date":"2024-01-15","salary":650000}`
+	raw := `{"name":"Tobba","role":"Engineer","start_date":"2025-09-29","salary":750000}`
 	var e Employee
 	json.Unmarshal([]byte(raw), &e)
 	fmt.Printf("\nUnmarshalled: %+v\n", e)
@@ -66,10 +66,10 @@ func main() {
 
 	// XML decode
 	xmlData := `
-<feed>
-  <item><title>Go 1.22 Released</title><link>https://go.dev/blog</link><pubDate>Feb 2024</pubDate></item>
-  <item><title>gRPC Best Practices</title><link>https://grpc.io</link><pubDate>Mar 2024</pubDate></item>
-</feed>`
+		<feed>
+			<item><title>Go 1.22 Released</title><link>https://go.dev/blog</link><pubDate>Feb 2024</pubDate></item>
+			<item><title>gRPC Best Practices</title><link>https://grpc.io</link><pubDate>Mar 2024</pubDate></item>
+		</feed>`
 	var feed Feed
 	xml.Unmarshal([]byte(xmlData), &feed)
 	fmt.Println("\n=== XML Feed ===")
